@@ -12,6 +12,7 @@ import ExportPage from './pages/ExportPage';
 import AffiliatesListPage from './pages/AffiliatesListPage';
 import AffiliateDetailPage from './pages/AffiliateDetailPage';
 import ApiIntegrationPage from './pages/ApiIntegrationPage';
+import LinkGeneratorPage from './pages/LinkGeneratorPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
@@ -63,6 +64,7 @@ function App() {
           <Route path="affiliates" element={<AffiliatesListPage />} />
           <Route path="affiliates/:id" element={<AffiliateDetailPage />} />
           <Route path="api-integration" element={<ApiIntegrationPage />} />
+          <Route path="link-generator" element={<LinkGeneratorPage />} />
         </Route>
         
         <Route path="*" element={<NotFoundPage />} />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { X, LayoutDashboard, List, PlusCircle, Upload, Download, Users, Key } from 'lucide-react';
+import { X, LayoutDashboard, List, PlusCircle, Upload, Download, Users, Key, LinkIcon } from 'lucide-react';
 import { useRole } from '../../context/RoleContext';
 
 interface SidebarProps {
@@ -121,6 +121,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
               >
                 <Key size={18} className="mr-3" />
                 API Integration
+              </Link>
+
+              <Link
+                to="/link-generator"
+                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                  location.pathname.startsWith('/link-generator')
+                    ? 'bg-brand-50 text-brand-700'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <LinkIcon size={18} className="mr-3" />
+                Link Generator
               </Link>
             </>
           )}
