@@ -245,46 +245,15 @@ const LinkGeneratorPage: React.FC = () => {
       {!showLinkGenerationForm ? (
         // History View with Generate New Link Button
         <>
-          {/* Quick Stats and Generate Button */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
-            <div className="card">
-              <div className="card-body">
-                <h3 className="text-sm font-medium text-gray-500">Total Links</h3>
-                <p className="mt-2 text-3xl font-semibold text-gray-900">{linkHistory.length}</p>
-              </div>
-            </div>
-            
-            <div className="card">
-              <div className="card-body">
-                <h3 className="text-sm font-medium text-gray-500">Total Clicks</h3>
-                <p className="mt-2 text-3xl font-semibold text-gray-900">
-                  {linkHistory.reduce((sum, link) => sum + link.clicks, 0)}
-                </p>
-              </div>
-            </div>
-            
-            <div className="card">
-              <div className="card-body">
-                <h3 className="text-sm font-medium text-gray-500">Avg. Clicks/Link</h3>
-                <p className="mt-2 text-3xl font-semibold text-gray-900">
-                  {linkHistory.length > 0 
-                    ? Math.round(linkHistory.reduce((sum, link) => sum + link.clicks, 0) / linkHistory.length)
-                    : 0
-                  }
-                </p>
-              </div>
-            </div>
-            
-            {/* Generate New Link Button - now a regular button instead of card */}
-            <div className="flex items-center justify-center">
-              <button
-                onClick={() => setShowLinkGenerationForm(true)}
-                className="btn btn-primary w-full"
-              >
-                <Plus size={20} className="mr-2" />
-                Generate New Link
-              </button>
-            </div>
+          {/* Generate Button */}
+          <div className="mb-6">
+            <button
+              onClick={() => setShowLinkGenerationForm(true)}
+              className="btn btn-primary"
+            >
+              <Plus size={20} className="mr-2" />
+              Generate New Link
+            </button>
           </div>
 
           {/* Link History */}
@@ -360,9 +329,6 @@ const LinkGeneratorPage: React.FC = () => {
                           UTM Parameters
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Clicks
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Created
                         </th>
                         <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -391,14 +357,6 @@ const LinkGeneratorPage: React.FC = () => {
                               <div>Medium: {link.utmParameters.medium}</div>
                               <div>Campaign: {link.utmParameters.campaign}</div>
                             </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-gray-900">{link.clicks}</div>
-                            {link.lastClickedAt && (
-                              <div className="text-xs text-gray-500">
-                                Last: {formatDate(link.lastClickedAt)}
-                              </div>
-                            )}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-500">
                             {formatDate(link.createdAt)}
@@ -573,21 +531,23 @@ const LinkGeneratorPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Link Shortening Options */}
-                  <div className="border-t border-gray-200 pt-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <h3 className="text-sm font-medium text-gray-900">Link Shortening</h3>
-                        <p className="text-sm text-gray-500">Create a shortened version of your link</p>
+                  {/* Link Shortening Options - Inline with other fields */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <label className="label mb-0">
+                          Shorten Link
+                        </label>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            {...register('enableShortening')}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand"></div>
+                        </label>
                       </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          className="sr-only peer"
-                          {...register('enableShortening')}
-                        />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand"></div>
-                      </label>
+                      <p className="text-sm text-gray-500 mt-1">Create a shortened version of your link</p>
                     </div>
 
                     {watchEnableShortening && (
@@ -716,7 +676,7 @@ const LinkGeneratorPage: React.FC = () => {
           {/* QR Code Display */}
           <div>
             {showQRCode && generatedLink && (
-              <div className="card mb-6">
+              <div className="card">
                 <div className="card-header">
                   <h2 className="text-lg font-medium text-gray-900">QR Code</h2>
                 </div>
@@ -742,36 +702,6 @@ const LinkGeneratorPage: React.FC = () => {
                 </div>
               </div>
             )}
-
-            {/* Quick Stats */}
-            <div className="card">
-              <div className="card-header">
-                <h2 className="text-lg font-medium text-gray-900">Quick Stats</h2>
-              </div>
-              <div className="card-body">
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-500">Total Links</span>
-                    <span className="text-sm font-medium text-gray-900">{linkHistory.length}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-500">Total Clicks</span>
-                    <span className="text-sm font-medium text-gray-900">
-                      {linkHistory.reduce((sum, link) => sum + link.clicks, 0)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-500">Avg. Clicks/Link</span>
-                    <span className="text-sm font-medium text-gray-900">
-                      {linkHistory.length > 0 
-                        ? Math.round(linkHistory.reduce((sum, link) => sum + link.clicks, 0) / linkHistory.length)
-                        : 0
-                      }
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       )}
