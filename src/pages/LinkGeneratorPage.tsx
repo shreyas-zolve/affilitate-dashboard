@@ -654,7 +654,7 @@ const LinkGeneratorPage: React.FC = () => {
                         <>
                           <LinkIcon size={16} className="mr-2" />
                           Generate Link
-                        <//>
+                        </>
                       )}
                     </button>
 
