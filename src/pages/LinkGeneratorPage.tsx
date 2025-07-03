@@ -164,11 +164,7 @@ const LinkGeneratorPage: React.FC = () => {
       
       toast.success('Link generated successfully!');
       
-      // Return to history view after successful generation
-      setTimeout(() => {
-        setShowLinkGenerationForm(false);
-        resetForm();
-      }, 2000);
+      // No automatic redirection - user stays on form page
     } catch (error) {
       toast.error('Failed to generate link');
     } finally {
@@ -279,16 +275,15 @@ const LinkGeneratorPage: React.FC = () => {
               </div>
             </div>
             
-            <div className="card">
-              <div className="card-body flex items-center justify-center">
-                <button
-                  onClick={() => setShowLinkGenerationForm(true)}
-                  className="btn btn-primary w-full"
-                >
-                  <Plus size={20} className="mr-2" />
-                  Generate New Link
-                </button>
-              </div>
+            {/* Generate New Link Button - now a regular button instead of card */}
+            <div className="flex items-center justify-center">
+              <button
+                onClick={() => setShowLinkGenerationForm(true)}
+                className="btn btn-primary w-full"
+              >
+                <Plus size={20} className="mr-2" />
+                Generate New Link
+              </button>
             </div>
           </div>
 
@@ -465,15 +460,18 @@ const LinkGeneratorPage: React.FC = () => {
           {/* Link Generation Form */}
           <div className="lg:col-span-2">
             <div className="card mb-6">
-              <div className="card-header flex items-center justify-between">
-                <h2 className="text-lg font-medium text-gray-900">Generate New Link</h2>
-                <button
-                  onClick={handleBackToHistory}
-                  className="btn btn-secondary"
-                >
-                  <ArrowLeft size={16} className="mr-2" />
-                  Back to History
-                </button>
+              <div className="card-header">
+                {/* Integrated back navigation with title */}
+                <div className="flex items-center">
+                  <button
+                    onClick={handleBackToHistory}
+                    className="mr-3 text-gray-500 hover:text-gray-900 transition-colors"
+                    title="Back to History"
+                  >
+                    <ArrowLeft size={20} />
+                  </button>
+                  <h2 className="text-lg font-medium text-gray-900">Generate New Link</h2>
+                </div>
               </div>
               <div className="card-body">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -656,7 +654,7 @@ const LinkGeneratorPage: React.FC = () => {
                         <>
                           <LinkIcon size={16} className="mr-2" />
                           Generate Link
-                        </>
+                        <//>
                       )}
                     </button>
 
