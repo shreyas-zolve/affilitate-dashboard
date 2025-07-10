@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { CreditCard, User, Lock, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 
 interface LocationState {
   from?: {
@@ -13,6 +14,7 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,11 +27,7 @@ const LoginPage: React.FC = () => {
     setLoading(true);
     
     try {
-      // Mock authentication
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Store authentication state
-      localStorage.setItem('isAuthenticated', 'true');
+      await login(email, password);
       
       toast.success('Successfully logged in');
       navigate(from, { replace: true });
@@ -59,6 +57,14 @@ const LoginPage: React.FC = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow-card sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-4">
+              <h4 className="text-sm font-medium text-blue-800 mb-2">Demo Accounts:</h4>
+              <div className="text-xs text-blue-700 space-y-1">
+                <div><strong>Company Admin:</strong> admin@company.com / password</div>
+                <div><strong>Affiliate Admin:</strong> admin@affiliate.com / password</div>
+              </div>
+            </div>
+            
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address

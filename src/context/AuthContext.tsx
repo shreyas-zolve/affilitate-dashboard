@@ -44,8 +44,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const initializeAuth = async () => {
       const token = localStorage.getItem('token');
+      const isAuthenticated = localStorage.getItem('isAuthenticated');
       
-      if (token) {
+      if (token && isAuthenticated === 'true') {
         try {
           // Verify the token is still valid
           const decoded = jwtDecode<DecodedToken>(token);
@@ -68,7 +69,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
           }
         } catch (error) {
-          localStorage.removeItem('token');
+          // For demo purposes, create a mock user if token decode fails
+          const mockUser = {
+            id: '2',
+            name: 'Affiliate Admin',
+            email: 'admin@affiliate.com',
+            role: 'affiliate_admin' as const,
+            affiliateId: 'aff1'
+          };
+          setUser(mockUser);
+        }
+      } else if (isAuthenticated === 'true') {
+        // Create a mock user for demo purposes
+        const mockUser = {
+          id: '2',
+          name: 'Affiliate Admin',
+          email: 'admin@affiliate.com',
+          role: 'affiliate_admin' as const,
+          affiliateId: 'aff1'
+        };
+        setUser(mockUser);
+      } else {
+        localStorage.removeItem('token');
+        localStorage.removeItem('isAuthenticated');
           setUser(null);
         }
       }
@@ -83,20 +106,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true);
     
     try {
-      const response = await api.post('/auth/login', { email, password });
-      const { token } = response.data;
+      // Mock authentication for demo
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      localStorage.setItem('token', token);
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      // Determine user role based on email for demo
+      let mockUser;
+      if (email.includes('affiliate')) {
+        mockUser = {
+          id: '2',
+          name: 'Affiliate Admin',
+          email: 'admin@affiliate.com',
+          role: 'affiliate_admin' as const,
+          affiliateId: 'aff1'
+        };
+      } else {
+        mockUser = {
+          id: '1',
+          name: 'Company Admin',
+          email: 'admin@company.com',
+          role: 'company_admin' as const
+        };
+      }
       
-      const decoded = jwtDecode<DecodedToken>(token);
-      setUser({
-        id: decoded.userId,
-        name: decoded.name,
-        email: decoded.email,
-        role: decoded.role,
-        affiliateId: decoded.affiliateId
-      });
+      localStorage.setItem('isAuthenticated', 'true');
+      setUser(mockUser);
     } catch (error) {
       throw error;
     } finally {
@@ -106,6 +139,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('isAuthenticated');
     delete api.defaults.headers.common['Authorization'];
     setUser(null);
   };

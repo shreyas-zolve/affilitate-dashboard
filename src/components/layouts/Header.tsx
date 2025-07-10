@@ -1,16 +1,17 @@
 import React from 'react';
 import { Menu, Bell, User } from 'lucide-react';
-import { useRole } from '../../context/RoleContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface HeaderProps {
   onMenuClick: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
-  const { role, setRole } = useRole();
+  const { user, logout } = useAuth();
 
-  const toggleRole = () => {
-    setRole(role === 'company_admin' ? 'affiliate_admin' : 'company_admin');
+  const handleLogout = () => {
+    logout();
+    window.location.href = '/login';
   };
 
   return (
@@ -37,12 +38,9 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
         
         {/* Right side - role toggle and notifications */}
         <div className="flex items-center space-x-4">
-          <button
-            onClick={toggleRole}
-            className="text-sm font-medium px-4 py-2 rounded-md bg-brand-50 text-brand-700 hover:bg-brand-100"
-          >
-            {role === 'company_admin' ? 'Switch to Affiliate Admin' : 'Switch to Company Admin'}
-          </button>
+          <div className="text-sm text-gray-600">
+            Welcome, {user?.name}
+          </div>
           
           <button
             className="text-gray-500 p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-500"
@@ -51,9 +49,13 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             <Bell size={20} />
           </button>
           
-          <div className="bg-gray-800 rounded-full h-8 w-8 flex items-center justify-center text-white">
+          <button
+            onClick={handleLogout}
+            className="bg-gray-800 rounded-full h-8 w-8 flex items-center justify-center text-white hover:bg-gray-700"
+            title="Logout"
+          >
             <User size={16} />
-          </div>
+          </button>
         </div>
       </div>
     </header>

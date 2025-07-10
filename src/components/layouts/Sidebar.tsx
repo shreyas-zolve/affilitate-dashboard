@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { X, LayoutDashboard, List, PlusCircle, Upload, Download, Users, Key, LinkIcon, DollarSign } from 'lucide-react';
-import { useRole } from '../../context/RoleContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -10,14 +10,15 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
-  const { role } = useRole();
+  const { user } = useAuth();
   const location = useLocation();
   
   const isActive = (path: string) => {
     return location.pathname === path;
   };
   
-  const showAdminFeatures = role === 'company_admin';
+  const showAdminFeatures = user?.role === 'company_admin';
+  const isAffiliate = user?.role === 'affiliate_admin' || user?.role === 'affiliate_user';
   
   if (!isOpen) return null;
   
@@ -74,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
           </Link>
           
           {/* Affiliate Revenue Link - Only for affiliates */}
-          {!showAdminFeatures && (
+          {isAffiliate && (
             <Link
               to="/my-earnings"
               className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
@@ -158,16 +159,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
             <div className="flex-shrink-0">
               <div className="h-8 w-8 rounded-full bg-brand-100 flex items-center justify-center">
                 <span className="text-xs font-medium text-brand-800">
-                  {role === 'company_admin' ? 'CA' : 'AA'}
+                  {user?.role === 'company_admin' ? 'CA' : user?.role === 'affiliate_admin' ? 'AA' : 'AU'}
                 </span>
               </div>
             </div>
             <div className="ml-3">
               <p className="text-sm font-medium text-gray-700">
-                {role === 'company_admin' ? 'Company Admin' : 'Affiliate Admin'}
+                {user?.role === 'company_admin' ? 'Company Admin' : 
+                 user?.role === 'affiliate_admin' ? 'Affiliate Admin' : 'Affiliate User'}
               </p>
               <p className="text-xs text-gray-500">
-                {role === 'company_admin' ? 'Full access' : 'Admin access'}
+                {user?.role === 'company_admin' ? 'Full access' : 'Affiliate access'}
               </p>
             </div>
           </div>
