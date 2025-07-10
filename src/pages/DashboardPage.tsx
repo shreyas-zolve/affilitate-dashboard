@@ -8,65 +8,26 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import leadService from '../services/leadService';
 import { useAuth } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
-import { Eye } from 'lucide-react';
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState<any>(null);
-  const [dateRange, setDateRange] = useState<{
-    startDate: Date;
-    endDate: Date;
-  }>({
-    startDate: new Date(new Date().setDate(new Date().getDate() - 30)),
-    endDate: new Date()
-  });
-  
-  const [activeFilter, setActiveFilter] = useState<string>('30days');
   
   useEffect(() => {
     fetchDashboardData();
-  }, [dateRange]);
+  }, []);
   
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const response = await leadService.getDashboardMetrics({
-        startDate: dateRange.startDate.toISOString(),
-        endDate: dateRange.endDate.toISOString()
-      });
+      const response = await leadService.getDashboardMetrics();
       setMetrics(response);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
       setLoading(false);
     }
-  };
-  
-  const handleFilterChange = (filter: string) => {
-    let startDate = new Date();
-    const endDate = new Date();
-    
-    switch (filter) {
-      case '7days':
-        startDate = new Date(endDate);
-        startDate.setDate(endDate.getDate() - 7);
-        break;
-      case '30days':
-        startDate = new Date(endDate);
-        startDate.setDate(endDate.getDate() - 30);
-        break;
-      case '90days':
-        startDate = new Date(endDate);
-        startDate.setDate(endDate.getDate() - 90);
-        break;
-      default:
-        return;
-    }
-    
-    setDateRange({ startDate, endDate });
-    setActiveFilter(filter);
   };
   
   const formatNumber = (num: number) => {
@@ -94,60 +55,6 @@ const DashboardPage: React.FC = () => {
     <div>
       <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
         <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-        
-        <div className="mt-4 md:mt-0 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="flex gap-1">
-            <button 
-              onClick={() => handleFilterChange('7days')}
-              className={`btn ${activeFilter === '7days' ? 'btn-primary' : 'btn-secondary'}`}
-            >
-              7 Days
-            </button>
-            <button 
-              onClick={() => handleFilterChange('30days')}
-              className={`btn ${activeFilter === '30days' ? 'btn-primary' : 'btn-secondary'}`}
-            >
-              30 Days
-            </button>
-            <button 
-              onClick={() => handleFilterChange('90days')}
-              className={`btn ${activeFilter === '90days' ? 'btn-primary' : 'btn-secondary'}`}
-            >
-              90 Days
-            </button>
-          </div>
-          
-          <div className="flex gap-2 items-center">
-            <div className="relative flex items-center">
-              <Calendar className="absolute left-3 h-4 w-4 text-gray-400" />
-              <DatePicker
-                selected={dateRange.startDate}
-                onChange={(date) => setDateRange({ ...dateRange, startDate: date as Date })}
-                selectsStart
-                startDate={dateRange.startDate}
-                endDate={dateRange.endDate}
-                className="input pl-9"
-              />
-            </div>
-            <span className="text-gray-500">to</span>
-            <DatePicker
-              selected={dateRange.endDate}
-              onChange={(date) => setDateRange({ ...dateRange, endDate: date as Date })}
-              selectsEnd
-              startDate={dateRange.startDate}
-              endDate={dateRange.endDate}
-              minDate={dateRange.startDate}
-              className="input"
-            />
-            <button 
-              onClick={() => setActiveFilter('custom')}
-              className="btn btn-secondary"
-              aria-label="Apply custom date range"
-            >
-              <Filter size={16} />
-            </button>
-          </div>
-        </div>
       </div>
       
       {loading ? (

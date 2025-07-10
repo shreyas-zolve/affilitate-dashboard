@@ -72,10 +72,42 @@ const AffiliateRevenuePage: React.FC = () => {
     startDate: Date;
     endDate: Date;
   }>({
-    startDate: new Date(new Date().setMonth(new Date().getMonth() - 6)),
+    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1), // First day of current month
     endDate: new Date()
   });
   const [activeTab, setActiveTab] = useState<'overview' | 'payments' | 'breakdown'>('overview');
+  const [activeFilter, setActiveFilter] = useState<string>('thisMonth');
+  
+  const handleFilterChange = (filter: string) => {
+    let startDate = new Date();
+    const endDate = new Date();
+    
+    switch (filter) {
+      case 'thisMonth':
+        startDate = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+        break;
+      case 'lastMonth':
+        startDate = new Date(endDate.getFullYear(), endDate.getMonth() - 1, 1);
+        endDate.setDate(0); // Last day of previous month
+        break;
+      case '3months':
+        startDate = new Date(endDate);
+        startDate.setMonth(endDate.getMonth() - 3);
+        break;
+      case '6months':
+        startDate = new Date(endDate);
+        startDate.setMonth(endDate.getMonth() - 6);
+        break;
+      case 'thisYear':
+        startDate = new Date(endDate.getFullYear(), 0, 1);
+        break;
+      default:
+        return;
+    }
+    
+    setDateRange({ startDate, endDate });
+    setActiveFilter(filter);
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -118,6 +150,39 @@ const AffiliateRevenuePage: React.FC = () => {
         </div>
         
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex gap-1 flex-wrap">
+            <button 
+              onClick={() => handleFilterChange('thisMonth')}
+              className={`btn ${activeFilter === 'thisMonth' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              This Month
+            </button>
+            <button 
+              onClick={() => handleFilterChange('lastMonth')}
+              className={`btn ${activeFilter === 'lastMonth' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              Last Month
+            </button>
+            <button 
+              onClick={() => handleFilterChange('3months')}
+              className={`btn ${activeFilter === '3months' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              3 Months
+            </button>
+            <button 
+              onClick={() => handleFilterChange('6months')}
+              className={`btn ${activeFilter === '6months' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              6 Months
+            </button>
+            <button 
+              onClick={() => handleFilterChange('thisYear')}
+              className={`btn ${activeFilter === 'thisYear' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              This Year
+            </button>
+          </div>
+          
           <div className="flex gap-2 items-center">
             <div className="relative flex items-center">
               <Calendar className="absolute left-3 h-4 w-4 text-gray-400" />
@@ -140,6 +205,13 @@ const AffiliateRevenuePage: React.FC = () => {
               minDate={dateRange.startDate}
               className="input"
             />
+            <button 
+              onClick={() => setActiveFilter('custom')}
+              className="btn btn-secondary"
+              aria-label="Apply custom date range"
+            >
+              <Filter size={16} />
+            </button>
           </div>
           
           <button onClick={downloadReport} className="btn btn-secondary">
