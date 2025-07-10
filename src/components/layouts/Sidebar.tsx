@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { X, LayoutDashboard, List, PlusCircle, Upload, Download, Users, Key, LinkIcon } from 'lucide-react';
+import { X, LayoutDashboard, List, PlusCircle, Upload, Download, Users, Key, LinkIcon, DollarSign } from 'lucide-react';
 import { useRole } from '../../context/RoleContext';
 
 interface SidebarProps {
@@ -72,6 +72,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
             <PlusCircle size={18} className="mr-3" />
             Add Lead
           </Link>
+          
+          {/* Affiliate Revenue Link - Only for affiliates */}
+          {!showAdminFeatures && (
+            <Link
+              to="/my-earnings"
+              className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                isActive('/my-earnings')
+                  ? 'bg-brand-50 text-brand-700'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <DollarSign size={18} className="mr-3" />
+              My Earnings
+            </Link>
+          )}
           
           {showAdminFeatures && (
             <>

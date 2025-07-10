@@ -13,8 +13,10 @@ import AffiliatesListPage from './pages/AffiliatesListPage';
 import AffiliateDetailPage from './pages/AffiliateDetailPage';
 import ApiIntegrationPage from './pages/ApiIntegrationPage';
 import LinkGeneratorPage from './pages/LinkGeneratorPage';
+import AffiliateRevenuePage from './pages/AffiliateRevenuePage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import RoleBasedRoute from './components/common/RoleBasedRoute';
 
 function App() {
   return (
@@ -65,6 +67,14 @@ function App() {
           <Route path="affiliates/:id" element={<AffiliateDetailPage />} />
           <Route path="api-integration" element={<ApiIntegrationPage />} />
           <Route path="link-generator" element={<LinkGeneratorPage />} />
+          <Route 
+            path="my-earnings" 
+            element={
+              <RoleBasedRoute allowedRoles={['affiliate_admin', 'affiliate_user']}>
+                <AffiliateRevenuePage />
+              </RoleBasedRoute>
+            } 
+          />
         </Route>
         
         <Route path="*" element={<NotFoundPage />} />

@@ -8,6 +8,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import leadService from '../services/leadService';
 import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
+import { Eye } from 'lucide-react';
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -78,6 +80,14 @@ const DashboardPage: React.FC = () => {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
+  };
+  
+  // Mock affiliate earnings data
+  const affiliateEarnings = {
+    totalEarnings: 21850,
+    thisMonth: 4850,
+    lastMonth: 3650,
+    growth: 32.9
   };
   
   return (
@@ -169,7 +179,7 @@ const DashboardPage: React.FC = () => {
       ) : (
         <>
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <div className={`grid grid-cols-1 md:grid-cols-2 ${user?.role === 'company_admin' ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-6 mb-6`}>
             <div className="card">
               <div className="card-body">
                 <h3 className="text-lg font-medium text-gray-500">Total Leads</h3>
@@ -185,38 +195,67 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
             
-            <div className="card">
-              <div className="card-body">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium text-gray-500">Signups Completed</h3>
-                  <span className="text-xs text-brand">Coming Soon</span>
+            {user?.role === 'company_admin' ? (
+              <>
+                <div className="card">
+                  <div className="card-body">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-medium text-gray-500">Signups Completed</h3>
+                      <span className="text-xs text-brand">Coming Soon</span>
+                    </div>
+                    <p className="mt-2 text-3xl font-semibold text-gray-900">--</p>
+                    <p className="mt-2 text-sm text-gray-500">Feature in development</p>
+                  </div>
                 </div>
-                <p className="mt-2 text-3xl font-semibold text-gray-900">--</p>
-                <p className="mt-2 text-sm text-gray-500">Feature in development</p>
-              </div>
-            </div>
-            
-            <div className="card">
-              <div className="card-body">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium text-gray-500">Checking Accounts Created</h3>
-                  <span className="text-xs text-brand">Coming Soon</span>
+                
+                <div className="card">
+                  <div className="card-body">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-medium text-gray-500">Checking Accounts Created</h3>
+                      <span className="text-xs text-brand">Coming Soon</span>
+                    </div>
+                    <p className="mt-2 text-3xl font-semibold text-gray-900">--</p>
+                    <p className="mt-2 text-sm text-gray-500">Feature in development</p>
+                  </div>
                 </div>
-                <p className="mt-2 text-3xl font-semibold text-gray-900">--</p>
-                <p className="mt-2 text-sm text-gray-500">Feature in development</p>
-              </div>
-            </div>
-            
-            <div className="card">
-              <div className="card-body">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium text-gray-500">Credit Cards Created</h3>
-                  <span className="text-xs text-brand">Coming Soon</span>
+                
+                <div className="card">
+                  <div className="card-body">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-medium text-gray-500">Credit Cards Created</h3>
+                      <span className="text-xs text-brand">Coming Soon</span>
+                    </div>
+                    <p className="mt-2 text-3xl font-semibold text-gray-900">--</p>
+                    <p className="mt-2 text-sm text-gray-500">Feature in development</p>
+                  </div>
                 </div>
-                <p className="mt-2 text-3xl font-semibold text-gray-900">--</p>
-                <p className="mt-2 text-sm text-gray-500">Feature in development</p>
+              </>
+            ) : (
+              /* Affiliate Revenue Glimpse */
+              <div className="card">
+                <div className="card-body">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-medium text-gray-500">My Earnings</h3>
+                    <Link 
+                      to="/my-earnings" 
+                      className="text-brand hover:text-brand-700 flex items-center text-sm font-medium"
+                    >
+                      <Eye size={16} className="mr-1" />
+                      View Details
+                    </Link>
+                  </div>
+                  <p className="text-3xl font-semibold text-gray-900">{formatCurrency(affiliateEarnings.totalEarnings)}</p>
+                  <div className="mt-2 flex items-center justify-between">
+                    <p className="text-sm text-gray-500">
+                      {formatCurrency(affiliateEarnings.thisMonth)} this month
+                    </p>
+                    <p className="text-sm text-green-600">
+                      +{affiliateEarnings.growth}% growth
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
           
           {/* Status Distribution */}
