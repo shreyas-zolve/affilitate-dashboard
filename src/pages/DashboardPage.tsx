@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, 
   ResponsiveContainer, Legend 
 } from 'recharts';
-import { Calendar, Filter, Download, RefreshCw, AlertCircle } from 'lucide-react';
+import { Calendar, Filter, Download, RefreshCw, AlertCircle, Eye } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import leadService from '../services/leadService';
