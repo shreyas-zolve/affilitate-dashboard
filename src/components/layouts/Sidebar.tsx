@@ -89,6 +89,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
             </Link>
           )}
           
+          {/* Link Generator - Available to all users */}
+          <Link
+            to="/link-generator"
+            className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+              location.pathname.startsWith('/link-generator')
+                ? 'bg-brand-50 text-brand-700'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            <LinkIcon size={18} className="mr-3" />
+            Link Generator
+          </Link>
+          
           {showAdminFeatures && (
             <>
               <Link
@@ -137,18 +150,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, className }) => {
               >
                 <Key size={18} className="mr-3" />
                 API Integration
-              </Link>
-
-              <Link
-                to="/link-generator"
-                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                  location.pathname.startsWith('/link-generator')
-                    ? 'bg-brand-50 text-brand-700'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <LinkIcon size={18} className="mr-3" />
-                Link Generator
               </Link>
             </>
           )}
